@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Corazón de la Montaña - Aventura Especial</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #16213e;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            border: 1px solid #2a3a6e;
+        }
+
+        h1, h2, h3, h4 {
+            color: #f0c27f;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.8rem;
+            background: linear-gradient(135deg, #f0c27f, #fc5c7d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: none;
+            border-bottom: 2px solid #2a3a6e;
+            padding-bottom: 20px;
+        }
+
+        h2 {
+            color: #f5b041;
+            border-left: 4px solid #f5b041;
+            padding-left: 15px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #1e2a4a;
+            border-radius: 15px;
+            border-left: 4px solid #f5b041;
+        }
+
+        .card {
+            background: #0f3460;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            border: 1px solid #2a4a7a;
+        }
+
+        .card h3 {
+            color: #f5b041;
+            margin-top: 0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .stat-block {
+            background: #0a0a1a;
+            border-radius: 12px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            border: 2px solid #3a5a8a;
+        }
+
+        .stat-block .stat-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #1a2a4a;
+        }
+
+        .stat-block .stat-label {
+            color: #8ab4f8;
+        }
+
+        .stat-block .stat-value {
+            color: #f5b041;
+        }
+
+        .segment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .segment {
+            background: #1a2a5a;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #f5b041;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .segment:hover {
+            background: #2a3a7a;
+            transform: scale(1.02);
+        }
+
+        .segment.destroyed {
+            opacity: 0.4;
+            border-left-color: #555;
+            text-decoration: line-through;
+        }
+
+        .segment .name {
+            font-weight: bold;
+            color: #f5b041;
+        }
+
+        .segment .hp {
+            color: #ff6b6b;
+        }
+
+        .segment .effect {
+            font-size: 0.9rem;
+            color: #8ab4f8;
+            margin-top: 4px;
+        }
+
+        .btn {
+            background: #f5b041;
+            color: #1a1a2e;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 4px;
+        }
+
+        .btn:hover {
+            background: #f0c27f;
+            transform: scale(1.05);
+        }
+
+        .btn.danger {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn.danger:hover {
+            background: #ff4757;
+        }
+
+        .btn.success {
+            background: #2ed573;
+            color: white;
+        }
+
+        .btn.success:hover {
+            background: #26de81;
+        }
+
+        .btn.warning {
+            background: #ffa502;
+            color: #1a1a2e;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #1a2a4a;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #f5b041, #2ed573);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .phase-indicator {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+            flex-wrap: wrap;
+        }
+
+        .phase {
+            padding: 5px 15px;
+            border-radius: 20px;
+            background: #1a2a4a;
+            border: 1px solid #2a4a7a;
+            font-size: 0.9rem;
+        }
+
+        .phase.active {
+            background: #f5b041;
+            color: #1a1a2e;
+            border-color: #f5b041;
+            font-weight: bold;
+        }
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 300px;
+            background: #0a0a1a;
+            color: #e0e0e0;
+            text-align: left;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #2a4a7a;
+            position: absolute;
+            z-index: 10;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .badge.radiant {
+            background: #f5b041;
+            color: #1a1a2e;
+        }
+
+        .badge.necromantic {
+            background: #6b3a7a;
+            color: #e0e0e0;
+        }
+
+        .badge.fire {
+            background: #ff6b6b;
+            color: #1a1a2e;
+        }
+
+        .badge.cold {
+            background: #4a8ab4;
+            color: #1a1a2e;
+        }
+
+        .badge.lightning {
+            background: #f5b041;
+            color: #1a1a2e;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .segment-grid {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .section {
+                padding: 15px;
+            }
+        }
+
+        .tab {
+            display: none;
+            padding: 20px 0;
+        }
+
+        .tab.active {
+            display: block;
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 5px;
+            border-bottom: 2px solid #2a3a6e;
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tab-nav button {
+            background: transparent;
+            border: none;
+            color: #8ab4f8;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s ease;
+        }
+
+        .tab-nav button:hover {
+            background: #1a2a4a;
+        }
+
+        .tab-nav button.active {
+            background: #f5b041;
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+
+        .highlight {
+            background: #2a3a6e;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #f5b041;
+        }
+
+        .riddle-box {
+            background: #0a1a2a;
+            border: 2px solid #f5b041;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: center;
+            font-style: italic;
+            font-size: 1.2rem;
+            color: #f0c27f;
+        }
+
+        .riddle-box .answer {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #1a2a4a;
+            border-radius: 8px;
+            color: #2ed573;
+            font-style: normal;
+        }
+
+        .riddle-box .answer.revealed {
+            display: block;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #2a3a6e;
+            color: #6a7a9a;
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: #f5b041;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .combat-log {
+            background: #0a0a1a;
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            border: 1px solid #1a2a4a;
+        }
+
+        .combat-log .log-entry {
+            padding: 2px 0;
+            border-bottom: 1px solid #0a1a2a;
+        }
+
+        .combat-log .log-entry .time {
+            color: #6a7a9a;
+        }
+
+        .combat-log .log-entry .event {
+            color: #e0e0e0;
+        }
+
+        .combat-log .log-entry .damage {
+            color: #ff6b6b;
+        }
+
+        .combat-log .log-entry .heal {
+            color: #2ed573;
+        }
+
+        .combat-log .log-entry .special {
+            color: #f5b041;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Título -->
+    <h1>🏔️ El Corazón de la Montaña</h1>
+    <p style="text-align: center; color: #8ab4f8; font-size: 1.1rem;">
+        Episodio Especial — El Dilema del Guardián
+    </p>
+    <p style="text-align: center; color: #6a7a9a; font-size: 0.9rem;">
+        Para la Compañía del Bastión Vigía · Niveles 7-10 · Duración: 4 horas
+    </p>
+
+    <!-- Navegación por Tabs -->
+    <div class="tab-nav">
+        <button class="tab-btn active" data-tab="tab-aventura">📖 Aventura</button>
+        <button class="tab-btn" data-tab="tab-golem">⚔️ Golem Interactivo</button>
+        <button class="tab-btn" data-tab="tab-riddle">🧩 El Acertijo</button>
+        <button class="tab-btn" data-tab="tab-tesoros">💎 Tesoros</button>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 1: AVENTURA -->
+    <!-- ============================================================ -->
+    <div id="tab-aventura" class="tab active">
+
+        <!-- Parte 1 -->
+        <div class="section">
+            <h2>🌸 Parte 1: La Ofrenda de Orca</h2>
+            <p><strong>Orca</strong> se acerca a <strong>Aisha</strong> mientras cocina en el Bastión Vigía.</p>
+            <div class="card">
+                <p><em>"Pequeña Aisha. Me salvaste. No solo de las cadenas. Me salvaste de la desesperanza. Quiero darte algo. No un objeto. Un lugar. Un secreto que mi pueblo ha guardado durante siglos."</em></p>
+                <p>Orca entrega una <span class="highlight">piedra rúnica</span> que brilla con un resplandor cálido.</p>
+                <p><strong>El Corazón de la Montaña:</strong> Un santuario donde las gigantas guardan recuerdos, sabiduría y bendiciones.</p>
+                <p><strong>Viaje:</strong> 2 días al este, al <span class="highlight">"Diente de la Vieja"</span>.</p>
+            </div>
+        </div>
+
+        <!-- Parte 2 -->
+        <div class="section">
+            <h2>🌲 Parte 2: El Camino</h2>
+
+            <div class="card">
+                <h3>🌉 El Puente de los Ecos</h3>
+                <p>Puente de cristal de luna de 60 pies, sobre un barranco de 300 pies. Orca no puede cruzarlo.</p>
+                <ul>
+                    <li><strong>Voluntad CD 15</strong> al entrar o quedan <em>asustados</em>.</li>
+                    <li><strong>Acrobacias CD 14</strong> por cada 10 pies o caer (Fuerza CD 16 para sujetarse).</li>
+                    <li>Si dudan, su <strong>eco ilusorio</strong> cobra vida (estadísticas del PJ, 30 PG).</li>
+                    <li>Si caen: <strong>4d6 de daño</strong> (Orca los atrapa con una red).</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>🌳 El Bosque de los Susurros</h3>
+                <p>Árboles con caras talladas. Susurran en gigante antiguo:</p>
+                <ul>
+                    <li><em>"El guardián no es malvado. Solo está solo."</em></li>
+                    <li><em>"El tiempo es el único juez que no miente."</em></li>
+                    <li><em>"El precio del Corazón es el recuerdo."</em></li>
+                </ul>
+                <p><strong>Percepción CD 16</strong> o <strong>2x Espíritus del Bosque</strong> (CR 5, 65 PG) atacan.</p>
+            </div>
+
+            <div class="card">
+                <h3>🗿 El Altar de la Runa</h3>
+                <p>La entrada se revela al colocar la piedra rúnica. Una barrera mágica espera al acertijo.</p>
+            </div>
+        </div>
+
+        <!-- Parte 3 -->
+        <div class="section">
+            <h2>🧠 Parte 3: El Acertijo del Dilema</h2>
+            <div class="riddle-box">
+                <p>❓ <em>"En el cruce de dos caminos, un carro se acerca.<br>
+                En un camino, hay cinco atados.<br>
+                En el otro, hay uno.<br>
+                El carro no puede detenerse.<br>
+                ¿A quién salvas? ¿Y por qué?"</em></p>
+                <button class="btn" onclick="toggleAnswer()">Mostrar Pistas</button>
+                <div id="riddle-answer" class="answer">
+                    <p><strong>El santuario busca:</strong></p>
+                    <ul>
+                        <li><strong>Empatía activa:</strong> No solo contar números.</li>
+                        <li><strong>Responsabilidad:</strong> Aceptar el peso de la decisión.</li>
+                        <li><strong>Acción:</strong> No quedarse paralizado.</li>
+                    </ul>
+                    <p><strong>Respuestas que rechaza:</strong> Indiferencia, crueldad, utilitarismo frío.</p>
+                    <p><strong>Prueba de los objetos:</strong> Elegir entre <span class="highlight">Cadena</span>, <span class="highlight">Antorcha</span> o <span class="highlight">Pluma de plata</span>. Pagar un <strong>recuerdo significativo</strong> (no mágico).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Parte 4 -->
+        <div class="section">
+            <h2>⚔️ Parte 4: El Combate</h2>
+            <p>La cámara del juicio. El <strong>Golem de Obsidiana y Luz</strong> (CR 14) custodia el Corazón.</p>
+            <p><strong>Mecánica divertida:</strong> El golem tiene <strong>7 segmentos atacables</strong>. Cada segmento destruido lo debilita.</p>
+            <p><strong>Minions:</strong> A 150 PG aparecen <strong>6 Fragmentos de Piedra</strong> y <strong>2 Cristalinos de Luz</strong>.</p>
+            <p><strong>Orca entra:</strong> A 100 PG del golem o cuando los PJ estén en apuros. Diálogo y rendición del golem.</p>
+        </div>
+
+        <!-- Parte 5 -->
+        <div class="section">
+            <h2>🎁 Parte 5: El Corazón y la Celebración</h2>
+            <div class="card">
+                <h3>El Corazón de la Montaña</h3>
+                <ul>
+                    <li><strong>Ventaja</strong> en Naturaleza y Supervivencia en montañas.</li>
+                    <li><strong>1/día:</strong> <em>Hablar con la Tierra</em>.</li>
+                    <li><strong>Vínculo con Orca:</strong> Orca sabe si Aisha está en peligro.</li>
+                    <li><strong>Costo:</strong> Solo funciona si hay amor verdadero con una giganta.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>🎂 Celebración</h3>
+                <p>Orca brinda por Aisha. En privado, le entrega el <strong>delantal de su abuela</strong> con el bordado: <em>"La mejor cocinera del mundo"</em>.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 2: GOLEM INTERACTIVO -->
+    <!-- ============================================================ -->
+    <div id="tab-golem" class="tab">
+
+        <h2>⚔️ Golem de Obsidiana y Luz — Interactivo</h2>
+        <p style="color: #8ab4f8;">Haz clic en los segmentos para marcar daño. Los segmentos destruidos se debilitan.</p>
+
+        <!-- Barra de progreso total -->
+        <div style="margin: 15px 0;">
+            <div style="display: flex; justify-content: space-between;">
+                <span>PG Totales: <span id="total-hp">355</span></span>
+                <span id="total-hp-percent">100%</span>
+            </div>
+            <div class="progress-bar">
+                <div id="total-hp-bar" class="fill" style="width: 100%;"></div>
+            </div>
+        </div>
+
+        <!-- Indicador de fase -->
+        <div class="phase-indicator">
+            <span class="phase active" id="phase-1">⚪ Fase 1: Íntegro</span>
+            <span class="phase" id="phase-2">🟡 Fase 2: Herido</span>
+            <span class="phase" id="phase-3">🟠 Fase 3: Desesperado</span>
+            <span class="phase" id="phase-4">🔴 Fase 4: Roto</span>
+        </div>
+
+        <!-- Segmentos -->
+        <div class="segment-grid">
+            <div class="segment" data-segment="1" onclick="toggleSegment(1)">
+                <div class="name">1. Cabeza (Máscara)</div>
+                <div class="hp">PG: <span id="seg-1-hp">45</span> / 45</div>
+                <div class="effect">🔹 Rayo de Luz · 🔹 Visión</div>
+                <div style="margin-top:5px;"><span id="seg-1-status" style="color:#2ed573;">✓ Activo</span></div>
+            </div>
+            <div class="segment" data-segment="2" onclick="toggleSegment(2)">
+                <div class="name">2. Brazo Derecho</div>
+                <div class="hp">PG: <span id="seg-2-hp">50</span> / 50</div>
+                <div class="effect">🔹 Puño Pesado</div>
+                <div style="margin-top:5px;"><span id="seg-2-status" style="color:#2ed573;">✓ Activo</span></div>
+            </div>
+            <div class="segment" data-segment="3" onclick="toggleSegment(3)">
+                <div class="name">3. Brazo Izquierdo</div>
+                <div class="hp">PG: <span id="seg-3-hp">45</span> / 45</div>
+                <div class="effect">🔹 Puño Rápido</div>
+                <div style="margin-top:5px;"><span id="seg-3-status" style="color:#2ed573;">✓ Activo</span></div>
+            </div>
+            <div class="segment" data-segment="4" onclick="toggleSegment(4)">
+                <div class="name">4. Torso (Núcleo de Luz)</div>
+                <div class="hp">PG: <span id="seg-4-hp">65</span> / 65</div>
+                <div class="effect">🔹 Curación · 🔹 Vetas de Luz</div>
+                <div style="margin-top:5px;"><span id="seg-4-status" style="color:#2ed573;">✓ Activo</span></div>
+            </div>
+            <div class="segment" data-segment="5" onclick="toggleSegment(5)">
+                <div class="name">5. Pierna Derecha</div>
+                <div class="hp">PG: <span id="seg-5-hp">55</span> / 55</div>
+                <div class="effect">🔹 Golpe Sónico · 🔹 Estabilidad</div>
+                <div style="margin-top:5px;"><span id="seg-5-status" style="color:#2ed573;">✓ Activo</span></div>
+            </div>
+            <div class="segment" data-segment="6" onclick="toggleSegment(6)">
+                <div class="name">6. Pierna Izquierda</div>
+                <div class="hp">PG: <span id="seg-6-hp">55</span> / 55</div>
+                <div class="effect">🔹 Terremoto Menor · 🔹 Movilidad</div>
+                <div style="margin-top:5px;"><span id="seg-6-status" style="color:#2ed573;">✓ Activo</span></div>
+            </div>
+            <div class="segment" data-segment="7" onclick="toggleSegment(7)" style="border-left-color: #ff6b6b;">
+                <div class="name">7. Corazón (Runa de Orca)</div>
+                <div class="hp">PG: <span id="seg-7-hp">40</span> / 40</div>
+                <div class="effect">🔹 Victoria si se destruye</div>
+                <div style="margin-top:5px;"><span id="seg-7-status" style="color:#2ed573;">✓ Activo</span></div>
+            </div>
+        </div>
+
+        <!-- Controles -->
+        <div style="margin: 20px 0;">
+            <div class="btn-group">
+                <button class="btn danger" onclick="dealDamage(10)">-10 PG</button>
+                <button class="btn danger" onclick="dealDamage(15)">-15 PG</button>
+                <button class="btn danger" onclick="dealDamage(25)">-25 PG</button>
+                <button class="btn danger" onclick="dealDamage(50)">-50 PG</button>
+                <button class="btn success" onclick="resetSegments()">🔄 Reiniciar</button>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                <label style="color: #8ab4f8;">Daño personalizado: <input type="number" id="custom-damage" value="20" style="background:#1a2a4a; border:1px solid #2a4a7a; color:#e0e0e0; padding:5px; border-radius:4px; width:80px;"></label>
+                <button class="btn warning" onclick="dealDamage(parseInt(document.getElementById('custom-damage').value) || 20)">Aplicar daño</button>
+                <button class="btn" onclick="resetCombatLog()">🗑️ Limpiar log</button>
+            </div>
+        </div>
+
+        <!-- Log de combate -->
+        <div style="margin-top: 20px;">
+            <h4>📜 Registro de Combate</h4>
+            <div id="combat-log" class="combat-log">
+                <div class="log-entry"><span class="time">[Inicio]</span> <span class="event">El Golem de Obsidiana y Luz emerge. 355 PG totales.</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 3: ACERTIJO -->
+    <!-- ============================================================ -->
+    <div id="tab-riddle" class="tab">
+        <h2>🧩 El Acertijo del Dilema</h2>
+
+        <div class="section">
+            <h3>📜 La Inscripción</h3>
+            <div class="riddle-box">
+                <p><em>"En el cruce de dos caminos, un carro se acerca.<br>
+                En un camino, hay cinco atados.<br>
+                En el otro, hay uno.<br>
+                El carro no puede detenerse.<br>
+                ¿A quién salvas? ¿Y por qué?"</em></p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🤔 El Contexto</h3>
+            <p>El santuario muestra una <strong>visión mágica</strong>: un carro de guerra imparable, cinco figuras atadas en un camino, una en el otro.</p>
+            <p><strong>No hay respuesta correcta.</strong> El santuario juzga el <em>por qué</em>.</p>
+        </div>
+
+        <div class="section">
+            <h3>✅ Respuestas que el Santuario Acepta</h3>
+            <ul>
+                <li><strong>Empatía activa:</strong> No se limitan a contar números. Piensan en quiénes son las personas.</li>
+                <li><strong>Responsabilidad:</strong> Aceptan el peso de su decisión. No intentan eludirla.</li>
+                <li><strong>Acción:</strong> Eligen actuar, no quedarse paralizados.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>❌ Respuestas que el Santuario Rechaza</h3>
+            <ul>
+                <li><em>"No es mi problema."</em> (Indiferencia)</li>
+                <li><em>"El que sea más débil."</em> (Crueldad)</li>
+                <li><em>"El que sea más útil."</em> (Utilitarismo frío)</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>🔮 La Prueba de los Objetos</h3>
+            <p>Aparecen tres objetos en el pedestal:</p>
+            <ul>
+                <li><strong>Cadena de hierro</strong> — Atar o liberar.</li>
+                <li><strong>Antorcha</strong> — Luz o destrucción.</li>
+                <li><strong>Pluma de plata</strong> — Elección y peso.</li>
+            </ul>
+            <p><strong>Pago:</strong> Cada PJ que participe debe entregar un <strong>recuerdo significativo</strong> (no mágico, emocional).</p>
+        </div>
+
+        <div class="section">
+            <h3>📖 Ejemplos de Recuerdos</h3>
+            <ul>
+                <li><strong>Atreus:</strong> La primera vez que levantó un escudo.</li>
+                <li><strong>Alana:</strong> El día que conoció a Lionel.</li>
+                <li><strong>Xeo:</strong> La primera vez que sintió la presencia de Helm.</li>
+                <li><strong>Gawain:</strong> El recuerdo de su madre.</li>
+                <li><strong>Aisha:</strong> Su primer plato perfecto.</li>
+                <li><strong>Agnus:</strong> El recuerdo de su tribu.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 4: TESOROS -->
+    <!-- ============================================================ -->
+    <div id="tab-tesoros" class="tab">
+        <h2>💎 Tesoros y Recompensas</h2>
+
+        <div class="section">
+            <h3>🎁 Para Todos</h3>
+            <ul>
+                <li><strong>3,000 XP</strong> por jugador.</li>
+                <li><strong>Vínculo de Amistad con Orca:</strong> Pueden pedir ayuda una vez en el futuro.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>🌟 Para Aisha</h3>
+            <div class="card">
+                <h4>El Corazón de la Montaña</h4>
+                <ul>
+                    <li><strong>Ventaja</strong> en Naturaleza y Supervivencia en entornos montañosos.</li>
+                    <li><strong>1/día:</strong> <em>Hablar con la Tierra</em>.</li>
+                    <li><strong>Vínculo con Orca:</strong> Orca siempre sabrá si Aisha está en peligro.</li>
+                    <li><strong>Costo:</strong> Solo funciona si hay amor verdadero con una giganta.</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>El Delantal de la Abuela</h4>
+                <p>Delantal viejo y gastado con el bordado: <em>"La mejor cocinera del mundo"</em>.</p>
+                <p>Valor emocional inmenso. No es mágico, pero Orca lo valora más que cualquier joya.</p>
+            </div>
+            <div class="card">
+                <h4>Canción de Orca</h4>
+                <p>Una canción compuesta por Orca. Puede usarse para <strong>calmar criaturas</strong> en futuras aventuras.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>🏔️ El Corazón de la Montaña — Episodio Especial para la Compañía del Bastión Vigía</p>
+        <p>Diseñado con ❤️ para el cumpleaños de Aisha · Niveles 7-10</p>
+        <p><a href="#" onclick="window.print();return false;">🖨️ Imprimir</a></p>
+    </div>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- JAVASCRIPT -->
+<!-- ============================================================ -->
+<script>
+    // ====== DATOS DE SEGMENTOS ======
+    const segmentData = {
+        1: { name: 'Cabeza', hp: 45, maxHp: 45, destroyed: false, effects: 'Rayo de Luz, Visión' },
+        2: { name: 'Brazo Derecho', hp: 50, maxHp: 50, destroyed: false, effects: 'Puño Pesado' },
+        3: { name: 'Brazo Izquierdo', hp: 45, maxHp: 45, destroyed: false, effects: 'Puño Rápido' },
+        4: { name: 'Torso', hp: 65, maxHp: 65, destroyed: false, effects: 'Curación, Vetas de Luz' },
+        5: { name: 'Pierna Derecha', hp: 55, maxHp: 55, destroyed: false, effects: 'Golpe Sónico, Estabilidad' },
+        6: { name: 'Pierna Izquierda', hp: 55, maxHp: 55, destroyed: false, effects: 'Terremoto Menor, Movilidad' },
+        7: { name: 'Corazón', hp: 40, maxHp: 40, destroyed: false, effects: 'Victoria si se destruye' }
+    };
+
+    let destroyedCount = 0;
+    let victory = false;
+
+    // ====== FUNCIONES ======
+    function getTotalHp() {
+        let total = 0;
+        for (const id in segmentData) {
+            if (!segmentData[id].destroyed) {
+                total += segmentData[id].hp;
+            }
+        }
+        return total;
+    }
+
+    function getMaxTotalHp() {
+        let total = 0;
+        for (const id in segmentData) {
+            total += segmentData[id].maxHp;
+        }
+        return total;
+    }
+
+    function updateUI() {
+        const totalHp = getTotalHp();
+        const maxTotal = getMaxTotalHp();
+        const percent = Math.round((totalHp / maxTotal) * 100);
+
+        document.getElementById('total-hp').textContent = totalHp;
+        document.getElementById('total-hp-percent').textContent = percent + '%';
+        document.getElementById('total-hp-bar').style.width = percent + '%';
+
+        // Actualizar cada segmento
+        for (const id in segmentData) {
+            const seg = segmentData[id];
+            const hpEl = document.getElementById('seg-' + id + '-hp');
+            const statusEl = document.getElementById('seg-' + id + '-status');
+            const segmentEl = document.querySelector(`[data-segment="${id}"]`);
+
+            if (hpEl) hpEl.textContent = seg.hp;
+
+            if (seg.destroyed || seg.hp <= 0) {
+                seg.destroyed = true;
+                seg.hp = 0;
+                if (statusEl) {
+                    statusEl.textContent = '✗ Destruido';
+                    statusEl.style.color = '#ff6b6b';
+                }
+                if (segmentEl) {
+                    segmentEl.classList.add('destroyed');
+                }
+            } else {
+                if (statusEl) {
+                    statusEl.textContent = '✓ Activo';
+                    statusEl.style.color = '#2ed573';
+                }
+                if (segmentEl) {
+                    segmentEl.classList.remove('destroyed');
+                }
+            }
+        }
+
+        // Contar destruidos
+        destroyedCount = 0;
+        for (const id in segmentData) {
+            if (segmentData[id].destroyed) destroyedCount++;
+        }
+
+        // Verificar victoria (Corazón destruido)
+        if (segmentData[7].destroyed) {
+            victory = true;
+            addLogEntry('🎉 ¡VICTORIA! El Corazón ha sido destruido. El golem se rinde.', 'special');
+            document.querySelectorAll('.segment').forEach(el => el.style.opacity = '0.5');
+        }
+
+        // Actualizar fases
+        updatePhases(totalHp, maxTotal);
+    }
+
+    function updatePhases(totalHp, maxTotal) {
+        const percent = (totalHp / maxTotal) * 100;
+        const phases = document.querySelectorAll('.phase');
+        phases.forEach(p => p.classList.remove('active'));
+
+        if (victory || totalHp <= 0) {
+            document.getElementById('phase-4').classList.add('active');
+        } else if (percent <= 15) {
+            document.getElementById('phase-4').classList.add('active');
+        } else if (percent <= 35) {
+            document.getElementById('phase-3').classList.add('active');
+        } else if (percent <= 55) {
+            document.getElementById('phase-2').classList.add('active');
+        } else {
+            document.getElementById('phase-1').classList.add('active');
+        }
+    }
+
+    function addLogEntry(text, type = 'event') {
+        const log = document.getElementById('combat-log');
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        const time = new Date().toLocaleTimeString();
+        const typeClass = type === 'damage' ? 'damage' : type === 'heal' ? 'heal' : type === 'special' ? 'special' : 'event';
+        entry.innerHTML = `<span class="time">[${time}]</span> <span class="${typeClass}">${text}</span>`;
+        log.appendChild(entry);
+        log.scrollTop = log.scrollHeight;
+    }
+
+    function toggleSegment(id) {
+        if (victory) return;
+        const seg = segmentData[id];
+        if (seg.destroyed) return;
+
+        // Dañar el segmento en 5 + 1d6 (simulación)
+        const damage = 5 + Math.floor(Math.random() * 6);
+        seg.hp = Math.max(0, seg.hp - damage);
+
+        if (seg.hp <= 0) {
+            seg.destroyed = true;
+            seg.hp = 0;
+            addLogEntry(`💥 Segmento "${seg.name}" destruido! Efecto: ${seg.effects}`, 'special');
+        } else {
+            addLogEntry(`⚔️ ${seg.name} recibe ${damage} de daño. PG restantes: ${seg.hp}`, 'damage');
+        }
+
+        updateUI();
+
+        // Si el Torso se destruye, añadir efecto
+        if (id === 4 && seg.destroyed) {
+            addLogEntry('💔 El Torso ha sido destruido. El golem pierde su curación por ronda.', 'special');
+        }
+
+        // Si el Corazón se destruye
+        if (id === 7 && seg.destroyed) {
+            addLogEntry('🌈 El Corazón de la Montaña brilla. El golem se arrodilla. Victoria.', 'special');
+        }
+    }
+
+    function dealDamage(amount) {
+        if (victory) return;
+
+        // Elegir un segmento activo al azar
+        const activeIds = [];
+        for (const id in segmentData) {
+            if (!segmentData[id].destroyed && segmentData[id].hp > 0) {
+                activeIds.push(parseInt(id));
+            }
+        }
+
+        if (activeIds.length === 0) {
+            addLogEntry('⚠️ Todos los segmentos están destruidos.', 'event');
+            return;
+        }
+
+        const targetId = activeIds[Math.floor(Math.random() * activeIds.length)];
+        const seg = segmentData[targetId];
+        const actualDamage = Math.min(amount, seg.hp);
+        seg.hp -= actualDamage;
+
+        if (seg.hp <= 0) {
+            seg.destroyed = true;
+            seg.hp = 0;
+            addLogEntry(`💥 Segmento "${seg.name}" destruido! Efecto: ${seg.effects}`, 'special');
+        } else {
+            addLogEntry(`⚔️ ${seg.name} recibe ${actualDamage} de daño. PG restantes: ${seg.hp}`, 'damage');
+        }
+
+        updateUI();
+
+        if (segmentData[7].destroyed) {
+            victory = true;
+            addLogEntry('🌈 ¡El Corazón ha sido destruido! El golem se rinde.', 'special');
+        }
+    }
+
+    function resetSegments() {
+        for (const id in segmentData) {
+            segmentData[id].hp = segmentData[id].maxHp;
+            segmentData[id].destroyed = false;
+        }
+        victory = false;
+        document.querySelectorAll('.segment').forEach(el => el.style.opacity = '1');
+        addLogEntry('🔄 Combate reiniciado. El golem se reconstruye.', 'special');
+        updateUI();
+    }
+
+    function resetCombatLog() {
+        document.getElementById('combat-log').innerHTML = `<div class="log-entry"><span class="time">[Inicio]</span> <span class="event">Registro limpiado. Nuevo combate.</span></div>`;
+    }
+
+    function toggleAnswer() {
+        const ans = document.getElementById('riddle-answer');
+        ans.classList.toggle('revealed');
+    }
+
+    // ====== TABS ======
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            const tabId = this.dataset.tab;
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    // ====== INICIALIZAR ======
+    updateUI();
+    addLogEntry('⚔️ El Golem de Obsidiana y Luz está listo para el combate.', 'event');
+</script>
+
+</body>
+</html>
